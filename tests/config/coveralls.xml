@@ -1,0 +1,7 @@
+# Coveralls Configuration
+
+repo_token: FCKAfoHrFU15PLEM9WH66bpYQ8cCTSF1K
+service_name: travis-ci
+
+coverage_clover: tests/logs/clover.xml
+json_path: tests/logs/coveralls-upload.json
