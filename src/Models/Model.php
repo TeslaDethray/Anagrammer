@@ -1,6 +1,6 @@
 <?php
 
-namespace TeslaDethray\Anagrammer;
+namespace TeslaDethray\Anagrammer\Models;
 
 abstract class Model
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace TeslaDethray\Anagrammer;
+namespace TeslaDethray\Anagrammer\Models;
 
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Doctrine\Common\Proxy\Exception\OutOfBoundsException;
