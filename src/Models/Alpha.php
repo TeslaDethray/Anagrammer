@@ -31,7 +31,7 @@ class Alpha extends Model
     /**
      * @param array $name
      */
-    protected function setProperties($name)
+    public function setProperties($name)
     {
         $this->name = $name;
     }

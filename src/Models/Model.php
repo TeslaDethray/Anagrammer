@@ -12,16 +12,6 @@ abstract class Model
     protected $id;
 
     /**
-     * Model constructor.
-     *
-     * @param array $properties
-     */
-    public function __construct($properties = [])
-    {
-        $this->setProperties($properties);
-    }
-
-    /**
      * @return int
      */
     public function getID()
@@ -30,9 +20,24 @@ abstract class Model
     }
 
     /**
+     * @return array
+     */
+    public function serialize()
+    {
+        $properties = [];
+        foreach (get_object_vars($this) as $name => $value) {
+            if (is_object($value) && method_exists($value, 'serialize')) {
+                $value = $value->serialize();
+            }
+            $properties[$name] = $value;
+        }
+        return $properties;
+    }
+
+    /**
      * @param array $properties
      */
-    protected function setProperties($properties)
+    public function setProperties($properties)
     {
         foreach ($properties as $name => $value) {
             $this->$name = $value;

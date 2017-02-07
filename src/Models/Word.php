@@ -2,16 +2,19 @@
 
 namespace TeslaDethray\Anagrammer\Models;
 
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Doctrine\Common\Proxy\Exception\OutOfBoundsException;
+use TeslaDethray\Anagrammer\Friends\EntityManagerAwareInterface;
+use TeslaDethray\Anagrammer\Friends\EntityManagerAwareTrait;
 
 /**
  * Class Word
  * @package TeslaDethray\Anagrammer
  * @Entity @Table(name="words")
  */
-class Word extends Model
+class Word extends Model implements EntityManagerAwareInterface
 {
+    use EntityManagerAwareTrait;
+
     /**
      * @Id @Column(type="integer") @GeneratedValue
      * @var integer
@@ -22,6 +25,11 @@ class Word extends Model
      * @var string
      */
     protected $word;
+    /**
+     * @Column(type="integer")
+     * @var integer
+     */
+    protected $length;
     /**
      * @Column(type="integer")
      * @var integer
@@ -476,23 +484,37 @@ class Word extends Model
     }
 
     /**
-     * @param $name
-     * @param $argument
-     * @return string
-     * @throws InvalidArgumentException When the $argument is 0 or more than 2 characters long
+     * @param array $word
      */
-    protected function validateArgumentLength($name, $argument)
+    public function setProperties($word)
     {
-        $argument = "$argument";
-        $length = count($argument);
-        if ($length === 1) {
-            $argument = "0$argument";
-        }
+        $alphas = $this->getAlphaList();
+        $i = 1;
+        $word_array = str_split($word);
 
-        if ($length !== 2) {
-            throw new InvalidArgumentException("The given $name, $argument, must be two digits long.");
+        $this->word = $word;
+        $this->length = count($word_array);
+        foreach ($word_array as $char) {
+            $alpha = $alphas[$char];
+
+            $count_property = 'alpha_' . sprintf('%02d', $alpha->getID());
+            $location_property = 'loc_' . sprintf('%02d', $i++);
+
+            $this->$count_property++;
+            $this->$location_property = $alpha;
         }
-        return $argument;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAlphaList()
+    {
+        $alphas = [];
+        foreach ($this->getEntityManager()->getRepository(__NAMESPACE__ . '\\Alpha')->findAll() as $alpha) {
+            $alphas[$alpha->getName()] = $alpha;
+        }
+        return $alphas;
     }
 
     /**
@@ -503,9 +525,8 @@ class Word extends Model
      */
     protected function getProperty($name, $value)
     {
-        $number = $this->validateArgumentLength($name, $value);
         try {
-            $property = $name . '_' . $number;
+            $property = $name . '_' . sprintf('%02d', $value);
             return $this->$property;
         } catch (\Exception $e) {
             throw new OutOfBoundsException("$name $number is not set.");
