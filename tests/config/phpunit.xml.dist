@@ -12,6 +12,8 @@
         <directory suffix=".php">../../src/</directory>
         <exclude>
             <directory suffix=".php">../../vendor/</directory>
+            <file>../../src/cli-config.php</file>
+            <file>../../src/bootstrap.php</file>
         </exclude>
     </whitelist>
   </filter>    
