@@ -9,6 +9,11 @@ use TeslaDethray\Anagrammer\Collections\Alphas;
 use TeslaDethray\Anagrammer\Models\Alpha;
 use TeslaDethray\Anagrammer\Models\Word;
 
+/**
+ * Class WordTest
+ * Testing class for TeslaDethray\Anagrammer\Models\Word
+ * @package TeslaDethray\Anagrammer\UnitTests\Models
+ */
 class WordTest extends TestCase
 {
     /**
