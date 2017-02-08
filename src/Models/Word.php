@@ -6,8 +6,6 @@ use Doctrine\Common\Proxy\Exception\OutOfBoundsException;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use TeslaDethray\Anagrammer\Collections\Alphas;
-use TeslaDethray\Anagrammer\Friends\EntityManagerAwareInterface;
-use TeslaDethray\Anagrammer\Friends\EntityManagerAwareTrait;
 
 /**
  * Class Word
@@ -478,12 +476,12 @@ class Word extends Model implements ContainerAwareInterface
     /**
      * Returns the number of the given alphabetical character in this word.
      *
-     * @param string $number Two-digit number relating to an alphabetical character
+     * @param Alpha $alpha An Alpha object representing a character
      * @return integer
      */
-    public function getNumberOfAlpha($number)
+    public function getNumberOfAlpha(Alpha $alpha)
     {
-        return $this->getProperty('alpha', $number);
+        return $this->getProperty('alpha', $alpha->getID());
     }
 
     /**
@@ -493,20 +491,19 @@ class Word extends Model implements ContainerAwareInterface
     public function setProperties($word)
     {
         $alphas = $this->getAlphaList();
-        $i = 1;
-        $word_array = str_split($word);
+        $i = 0;
 
         $this->word = $word;
-        $this->length = count($word_array);
-        foreach ($word_array as $char) {
+        foreach (str_split($word) as $char) {
             $alpha = $alphas[$char];
 
             $count_property = 'alpha_' . sprintf('%02d', $alpha->getID());
-            $location_property = 'loc_' . sprintf('%02d', $i++);
+            $location_property = 'loc_' . sprintf('%02d', ++$i);
 
             $this->$count_property++;
             $this->$location_property = $alpha;
         }
+        $this->length = $i;
         return $this;
     }
 
@@ -522,6 +519,9 @@ class Word extends Model implements ContainerAwareInterface
         return $alphas;
     }
 
+    /**
+     * @return Alphas
+     */
     protected function getAlphas()
     {
         if (empty($this->alphas)) {
@@ -542,7 +542,7 @@ class Word extends Model implements ContainerAwareInterface
             $property = $name . '_' . sprintf('%02d', $value);
             return $this->$property;
         } catch (\Exception $e) {
-            throw new OutOfBoundsException("$name $number is not set.");
+            throw new OutOfBoundsException("$name $value is not set.");
         }
     }
 }
