@@ -3,6 +3,9 @@
 namespace TeslaDethray\Anagrammer\Models;
 
 use Doctrine\Common\Proxy\Exception\OutOfBoundsException;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
+use TeslaDethray\Anagrammer\Collections\Alphas;
 use TeslaDethray\Anagrammer\Friends\EntityManagerAwareInterface;
 use TeslaDethray\Anagrammer\Friends\EntityManagerAwareTrait;
 
@@ -11,9 +14,9 @@ use TeslaDethray\Anagrammer\Friends\EntityManagerAwareTrait;
  * @package TeslaDethray\Anagrammer
  * @Entity @Table(name="words")
  */
-class Word extends Model implements EntityManagerAwareInterface
+class Word extends Model implements ContainerAwareInterface
 {
-    use EntityManagerAwareTrait;
+    use ContainerAwareTrait;
 
     /**
      * @Id @Column(type="integer") @GeneratedValue
@@ -485,6 +488,7 @@ class Word extends Model implements EntityManagerAwareInterface
 
     /**
      * @param array $word
+     * @return $this
      */
     public function setProperties($word)
     {
@@ -503,6 +507,7 @@ class Word extends Model implements EntityManagerAwareInterface
             $this->$count_property++;
             $this->$location_property = $alpha;
         }
+        return $this;
     }
 
     /**
@@ -511,10 +516,18 @@ class Word extends Model implements EntityManagerAwareInterface
     protected function getAlphaList()
     {
         $alphas = [];
-        foreach ($this->getEntityManager()->getRepository(__NAMESPACE__ . '\\Alpha')->findAll() as $alpha) {
+        foreach ($this->getAlphas()->all() as $alpha) {
             $alphas[$alpha->getName()] = $alpha;
         }
         return $alphas;
+    }
+
+    protected function getAlphas()
+    {
+        if (empty($this->alphas)) {
+            $this->alphas = $this->getContainer()->get(Alphas::class);
+        }
+        return $this->alphas;
     }
 
     /**

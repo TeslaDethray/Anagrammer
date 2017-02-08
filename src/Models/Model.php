@@ -2,8 +2,17 @@
 
 namespace TeslaDethray\Anagrammer\Models;
 
-abstract class Model
+use TeslaDethray\Anagrammer\Friends\EntityManagerAwareInterface;
+use TeslaDethray\Anagrammer\Friends\EntityManagerAwareTrait;
+
+/**
+ * Class Model
+ * @package TeslaDethray\Anagrammer\Models
+ */
+abstract class Model implements EntityManagerAwareInterface
 {
+    use EntityManagerAwareTrait;
+
     /**
      * @Id @Column(type="integer") @GeneratedValue
      * @var integer
@@ -35,12 +44,25 @@ abstract class Model
     }
 
     /**
-     * @param array $properties
+     * @param mixed $properties
+     * @return $this
      */
     public function setProperties($properties)
     {
         foreach ($properties as $name => $value) {
             $this->$name = $value;
         }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function save()
+    {
+        $entity_manager = $this->getEntityManager();
+        $entity_manager->persist($this);
+        $entity_manager->flush();
+        return $this;
     }
 }

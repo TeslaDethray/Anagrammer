@@ -29,10 +29,12 @@ class Alpha extends Model
     }
 
     /**
-     * @param array $name
+     * @param string $name
+     * @return $this
      */
     public function setProperties($name)
     {
-        $this->name = $name;
+        $this->name = "$name";
+        return $this;
     }
 }
