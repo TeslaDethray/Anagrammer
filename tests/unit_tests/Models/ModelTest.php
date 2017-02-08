@@ -48,7 +48,6 @@ class ModelTest extends TestCase
         $serialized = $this->model->serialize();
         $this->assertEquals($serialized['id'], $id);
         $this->assertEquals($serialized['member']['id'], $id);
-
     }
 
     public function testSetProperties()

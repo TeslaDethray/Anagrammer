@@ -118,5 +118,4 @@ class WordTest extends TestCase
             ->willReturn($alphas);
         return $alphas;
     }
-
 }
