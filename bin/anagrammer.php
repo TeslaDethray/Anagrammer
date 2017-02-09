@@ -10,20 +10,24 @@ try {
 }
 
 $anagrammer = new \TeslaDethray\Anagrammer\Anagrammer($entity_manager);
+$container = $anagrammer->getContainer();
 
 switch (strtolower($argv[1])) {
     case 'add':
         foreach (getData($argv) as $value) {
-            $target = $anagrammer->getContainer()->get("TeslaDethray\\Anagrammer\\Models\\$base_class");
+            $target = $container->get("TeslaDethray\\Anagrammer\\Models\\$base_class");
             $target->setProperties($value)->save();
             echo "Created $base_class with ID " . $target->getID() . PHP_EOL;
         }
         break;
     case 'list':
-        var_dump($anagrammer->getContainer()->get("TeslaDethray\\Anagrammer\\Collections\\$base_class")->serialize());
+        var_dump($container->get("TeslaDethray\\Anagrammer\\Collections\\$base_class")->serialize());
+        break;
+    case 'info':
+        var_dump($container->get("TeslaDethray\\Anagrammer\\Collections\\$base_class")->get($argv[3]));
         break;
     default:
-        throw new \Exception('Options are: add');
+        throw new \Exception('Options are: add, list, info');
         break;
 }
 

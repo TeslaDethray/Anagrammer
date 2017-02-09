@@ -21,6 +21,11 @@ class AlphaTest extends TestCase
         $this->model = new Alpha();
     }
 
+    public function testGetPointValue()
+    {
+        $this->assertInternalType('integer', $this->model->getPointValue());
+    }
+
     public function testSetProperties()
     {
         $char = 'z';

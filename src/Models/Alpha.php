@@ -15,10 +15,15 @@ class Alpha extends Model
      */
     protected $id;
     /**
-     * @Column(type="string", length=1)
+     * @Column(type="string", length=1, unique=true)
      * @var string
      */
     protected $name;
+    /**
+     * @Column(type="integer", nullable=true)
+     * @var integer
+     */
+    protected $point_value = 0;
 
     /**
      * @return string
@@ -26,6 +31,14 @@ class Alpha extends Model
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getPointValue()
+    {
+        return $this->point_value;
     }
 
     /**

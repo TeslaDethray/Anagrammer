@@ -2,6 +2,8 @@
 
 namespace TeslaDethray\Anagrammer\Collections;
 
+use Doctrine\ORM\EntityRepository;
+use League\Container\Exception\NotFoundException;
 use TeslaDethray\Anagrammer\Friends\EntityManagerAwareInterface;
 use TeslaDethray\Anagrammer\Friends\EntityManagerAwareTrait;
 use TeslaDethray\Anagrammer\Models\Model;
@@ -25,17 +27,52 @@ abstract class Collection implements EntityManagerAwareInterface
     /**
      * @var Model[]
      */
-    protected $models;
+    protected $models = [];
+    /**
+     * @var EntityRepository
+     */
+    protected $repository;
+    /**
+     * @var string[]
+     */
+    protected $searchable_fields = ['id',];
+
+    /**
+     * @param Model $alpha
+     */
+    public function add(Model $alpha)
+    {
+        $this->models[] = $alpha;
+    }
 
     /**
      * @return Model[]
      */
     public function all()
     {
-        if (!isset($this->models)) {
-            $this->models = $this->getEntityManager()->getRepository($this->collected_class)->findAll();
+        if (empty($this->models)) {
+            $this->models = $this->getRepository()->findAll();
         }
         return $this->models;
+    }
+
+    /**
+     * @param string $id
+     * @return Model
+     */
+    public function get($id)
+    {
+        $results = [];
+        foreach ($this->searchable_fields as $field) {
+            $result = $this->getRepository()->findBy([$field => $id,]);
+            if (is_array($result)) {
+                $results = array_merge($results, $result);
+            }
+        }
+        if (empty($results)) {
+            throw new NotFoundException("Could not locate a(n) {$this->collected_class} by $id.");
+        }
+        return $results;
     }
 
     /**
@@ -49,5 +86,16 @@ abstract class Collection implements EntityManagerAwareInterface
             },
             $this->all()
         );
+    }
+
+    /**
+     * @return EntityRepository
+     */
+    protected function getRepository()
+    {
+        if (empty($this->repository)) {
+            $this->repository = $this->getEntityManager()->getRepository($this->collected_class);
+        }
+        return $this->repository;
     }
 }

@@ -7,6 +7,7 @@ use League\Container\Container;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use TeslaDethray\Anagrammer\Collections\Alphas;
+use TeslaDethray\Anagrammer\Collections\Words;
 use TeslaDethray\Anagrammer\Friends\EntityManagerAwareInterface;
 use TeslaDethray\Anagrammer\Friends\EntityManagerAwareTrait;
 use TeslaDethray\Anagrammer\Models\Alpha;
@@ -44,6 +45,7 @@ class Anagrammer implements ContainerAwareInterface, EntityManagerAwareInterface
 
         $container->add(Alphas::class);
         $container->add(Alpha::class);
+        $container->add(Words::class);
         $container->add(Word::class);
 
         $this->setContainer($container);
