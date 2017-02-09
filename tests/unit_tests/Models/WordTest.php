@@ -40,7 +40,6 @@ class WordTest extends TestCase
         parent::setUp();
 
         $this->alphas = $this->getMockBuilder(Alphas::class)
-            ->disableOriginalConstructor()
             ->getMock();
         $this->container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
@@ -48,6 +47,42 @@ class WordTest extends TestCase
 
         $this->model = new Word();
         $this->model->setContainer($this->container);
+    }
+
+    public function testGetPointValue()
+    {
+        $this->assertNull($this->model->getPointValue());
+    }
+
+    public function testIsAnagramFor()
+    {
+        $this->mockGetAlphaList();
+
+        $string = 'abcdefghijklmnopqrstuvwxyz';
+        $alphas = $this->getMockBuilder(Alphas::class)->getMock();
+        $alpha_array = [];
+        foreach (str_split($string) as $char) {
+            $alpha = $this->getMockBuilder(Alpha::class)
+                ->getMock();
+            $num = sprintf('%02d', ord(strtoupper('abcdefghijklmnopqrstuvwxyz')) - ord('A') + 1);
+            $alpha->method('getPropertyName')->willReturn("alpha_$num");
+            $alpha_array[] = $alpha;
+        }
+        $alphas->expects($this->once())
+            ->method('all')
+            ->willReturn($alpha_array);
+
+        $this->model->setProperties($string);
+        $this->assertFalse($this->model->isAnagramFor($alphas));
+    }
+
+    public function testSerialize()
+    {
+        $word = 'word';
+        $this->mockGetAlphaList();
+        $this->model->setProperties($word);
+        $expected = ['word' => $word, 'point_value' => null,];
+        $this->assertEquals($expected, $this->model->serialize());
     }
 
     public function testSetProperties()
@@ -92,6 +127,9 @@ class WordTest extends TestCase
         $this->expectException(OutOfBoundsException::class);
         $this->expectExceptionMessage("loc $number is not set.");
         $this->model->getCharacterInLocation(42);
+
+        $expected_serialize = ['word' => $word, 'point_value' => null,];
+        $this->assertEqual($expected_serialize, $this->model->serialize());
     }
 
     protected function mockGetAlphaList()
@@ -116,6 +154,10 @@ class WordTest extends TestCase
             ->method('all')
             ->with()
             ->willReturn($alphas);
+        $this->container->expects($this->once())
+            ->method('get')
+            ->with(Alphas::class)
+            ->willReturn($this->alphas);
         return $alphas;
     }
 }

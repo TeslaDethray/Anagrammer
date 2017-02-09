@@ -42,6 +42,22 @@ class Alpha extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getPropertyName()
+    {
+        return 'alpha_' . sprintf('%02d', $this->getID());
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isWildcard()
+    {
+        return ($this->getName() === '*');
+    }
+
+    /**
      * @param string $name
      * @return $this
      */

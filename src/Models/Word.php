@@ -484,6 +484,41 @@ class Word extends Model implements ContainerAwareInterface
         return $this->getProperty('alpha', $alpha->getID());
     }
 
+    public function getPointValue(array $alphas = [])
+    {
+        return null;
+    }
+
+    /**
+     * @param Alphas $alphas
+     * @return bool
+     */
+    public function isAnagramFor(Alphas $alphas)
+    {
+        foreach ($alphas->all() as $alpha) {
+            $property = $alpha->getPropertyName();
+            if ($this->$property > 0) {
+                $this->$property--;
+            }
+        }
+        $wildcard_sum = 0;
+        for ($i = 1; $i <= 74; $i++) {
+            $wildcard_sum += $this->getProperty('alpha', $i);
+        }
+        return ($alphas->countWildcards() >= $wildcard_sum);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function serialize()
+    {
+        return [
+            'word' => $this->word,
+            'point_value' => $this->getPointValue(),
+        ];
+    }
+
     /**
      * @param array $word
      * @return $this
