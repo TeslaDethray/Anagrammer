@@ -19,7 +19,7 @@ if (file_exists($path = __DIR__ . '/../vendor/autoload.php')
 
 set_error_handler('exceptions_error_handler');
 
-function exceptions_error_handler($severity, $message, $filename, $lineno)
+function exceptions_error_handler($severity, $message, $filename, $lineno) : void
 {
     if (error_reporting() == 0) {
         return;

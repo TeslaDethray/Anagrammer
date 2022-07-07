@@ -24,13 +24,12 @@ switch (strtolower($argv[1])) {
         var_dump($container->get("TeslaDethray\\Anagrammer\\Collections\\$base_class")->serialize());
         break;
     case 'info':
-        var_dump($container->get("TeslaDethray\\Anagrammer\\Collections\\$base_class")->get($argv[3]));
+        var_dump($container->get("TeslaDethray\\Anagrammer\\Collections\\$base_class")->get($argv[3])->serialize());
         break;
     case 'anagram':
         $alphas = $container->get('TeslaDethray\\Anagrammer\\Collections\\Alphas');
         foreach (str_split($argv[2]) as $char) {
             $alpha = $alphas->get($char);
-            $alpha = array_shift($alpha);
             $alphas->add($alpha);
         }
         $words = $alphas->anagram();

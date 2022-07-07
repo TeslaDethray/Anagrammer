@@ -18,11 +18,11 @@ class Alphas extends Collection implements ContainerAwareInterface
     /**
      * @var string
      */
-    protected $collected_class = Alpha::class;
+    protected string $collected_class = Alpha::class;
     /**
      * @var string[]
      */
-    protected $searchable_fields = ['id', 'name',];
+    protected array $searchable_fields = ['id', 'name',];
 
     /**
      * @return Words
@@ -47,7 +47,7 @@ class Alphas extends Collection implements ContainerAwareInterface
         $words = $this->getContainer()->get(Words::class);
         foreach ($query->getResult() as $word_id) {
             $word = $words->get($word_id['id']);
-            $word = array_shift($word);
+            $word->setFilterAlphas($this);
             if (($num_wildcards === 0) || $word->isAnagramFor($this)) {
                 $words->add($word);
             }
@@ -56,9 +56,17 @@ class Alphas extends Collection implements ContainerAwareInterface
     }
 
     /**
+     * @return bool
+     */
+    public function containsWildcards() : bool
+    {
+        return $this->countWildcards() > 0;
+    }
+
+    /**
      * @return int
      */
-    public function countWildcards()
+    public function countWildcards() : int
     {
         $wildcards = 0;
         foreach ($this->models as $alpha) {

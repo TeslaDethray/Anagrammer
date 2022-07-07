@@ -18,12 +18,21 @@ abstract class Model implements EntityManagerAwareInterface
      * @var integer
      * This needs to be added to every model for the proper functioning of the ORM.
      */
-    protected $id;
+    protected int $id;
+
+    /**
+     * @param string
+     * @return mixed
+     */
+    public function get(string $key) : mixed
+    {
+        return $this->$key;
+    }
 
     /**
      * @return int
      */
-    public function getID()
+    public function getID() : int
     {
         return $this->id;
     }
@@ -31,7 +40,7 @@ abstract class Model implements EntityManagerAwareInterface
     /**
      * @return array
      */
-    public function serialize()
+    public function serialize() : array
     {
         $properties = [];
         foreach (get_object_vars($this) as $name => $value) {
@@ -44,10 +53,10 @@ abstract class Model implements EntityManagerAwareInterface
     }
 
     /**
-     * @param mixed $properties
-     * @return $this
+     * @param array $properties
+     * @return Model $this
      */
-    public function setProperties($properties)
+    public function setProperties(array $properties) : Model
     {
         foreach ($properties as $name => $value) {
             $this->$name = $value;
@@ -56,9 +65,9 @@ abstract class Model implements EntityManagerAwareInterface
     }
 
     /**
-     * @return $this
+     * @return Model $this
      */
-    public function save()
+    public function save() : Model
     {
         $entity_manager = $this->getEntityManager();
         $entity_manager->persist($this);

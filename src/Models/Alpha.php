@@ -13,22 +13,22 @@ class Alpha extends Model
      * @Id @Column(type="integer") @GeneratedValue
      * @var integer
      */
-    protected $id;
+    protected int $id;
     /**
      * @Column(type="string", length=1, unique=true)
      * @var string
      */
-    protected $name;
+    protected string $name;
     /**
      * @Column(type="integer", nullable=true)
      * @var integer
      */
-    protected $point_value = 0;
+    protected int $point_value = 0;
 
     /**
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -36,7 +36,7 @@ class Alpha extends Model
     /**
      * @return integer
      */
-    public function getPointValue()
+    public function getPointValue() : int
     {
         return $this->point_value;
     }
@@ -44,24 +44,33 @@ class Alpha extends Model
     /**
      * @return string
      */
-    public function getPropertyName()
+    public function getPropertyName() : string
     {
         return 'alpha_' . sprintf('%02d', $this->getID());
     }
 
     /**
+     * @param Alpha
      * @return boolean
      */
-    public function isWildcard()
+    public function isEqualTo(Alpha $other_alpha) : bool
+    {
+        return $other_alpha->getID() === $this->getID();
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isWildcard() : bool
     {
         return ($this->getName() === '*');
     }
 
     /**
      * @param string $name
-     * @return $this
+     * @return Alpha $this
      */
-    public function setProperties($name)
+    public function setProperties($name) : Alpha
     {
         $this->name = "$name";
         return $this;

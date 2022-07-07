@@ -19,28 +19,28 @@ abstract class Collection implements EntityManagerAwareInterface
     /**
      * @var integer
      */
-    public $id;
+    public int $id;
     /**
      * @var string
      */
-    protected $collected_class = Model::class;
+    protected string $collected_class = Model::class;
     /**
      * @var Model[]
      */
-    protected $models = [];
+    protected array $models = [];
     /**
      * @var EntityRepository
      */
-    protected $repository;
+    protected EntityRepository $repository;
     /**
      * @var string[]
      */
-    protected $searchable_fields = ['id',];
+    protected array $searchable_fields = ['id',];
 
     /**
      * @param Model $alpha
      */
-    public function add(Model $alpha)
+    public function add(Model $alpha) : void
     {
         $this->models[] = $alpha;
     }
@@ -48,7 +48,7 @@ abstract class Collection implements EntityManagerAwareInterface
     /**
      * @return Model[]
      */
-    public function all()
+    public function all() : array
     {
         if (empty($this->models)) {
             $this->models = $this->getRepository()->findAll();
@@ -58,9 +58,11 @@ abstract class Collection implements EntityManagerAwareInterface
 
     /**
      * @param string $id
-     * @return Model
+     * @return Model The matched model
+     * @throws NotFoundException When no matches are made
+     * @throws \Exception When more than one match is made
      */
-    public function get($id)
+    public function get(string $id) : Model
     {
         $results = [];
         foreach ($this->searchable_fields as $field) {
@@ -72,13 +74,30 @@ abstract class Collection implements EntityManagerAwareInterface
         if (empty($results)) {
             throw new NotFoundException("Could not locate a(n) {$this->collected_class} by $id.");
         }
-        return $results;
+        if (count($results) > 1) {
+            throw new \Exception("$id yielded more than one result.");
+        }
+        return array_shift($results);
+    }
+
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function has(string $id) : bool
+    {
+        foreach($this->models as $model) {
+            foreach ($this->searchable_fields as $field) {
+                if ($model->get($field) === $id) return true;
+            }
+        }
+        return false;
     }
 
     /**
      * @return array
      */
-    public function serialize()
+    public function serialize() : array
     {
         return array_map(
             function ($model) {
@@ -91,7 +110,7 @@ abstract class Collection implements EntityManagerAwareInterface
     /**
      * @return EntityRepository
      */
-    protected function getRepository()
+    protected function getRepository() : EntityRepository
     {
         if (empty($this->repository)) {
             $this->repository = $this->getEntityManager()->getRepository($this->collected_class);
