@@ -47,7 +47,6 @@ class Alphas extends Collection implements ContainerAwareInterface
         $words = $this->getContainer()->get(Words::class);
         foreach ($query->getResult() as $word_id) {
             $word = $words->get($word_id['id']);
-            $word = array_shift($word);
             if (($num_wildcards === 0) || $word->isAnagramFor($this)) {
                 $words->add($word);
             }

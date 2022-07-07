@@ -30,7 +30,6 @@ switch (strtolower($argv[1])) {
         $alphas = $container->get('TeslaDethray\\Anagrammer\\Collections\\Alphas');
         foreach (str_split($argv[2]) as $char) {
             $alpha = $alphas->get($char);
-            $alpha = array_shift($alpha);
             $alphas->add($alpha);
         }
         $words = $alphas->anagram();

@@ -58,10 +58,10 @@ abstract class Collection implements EntityManagerAwareInterface
 
     /**
      * @param string $id
-     * @return Model
+     * @return Model|array
      * @throws NotFoundException
      */
-    public function get(string $id) : Model
+    public function get(string $id) : Model|array
     {
         $results = [];
         foreach ($this->searchable_fields as $field) {
@@ -74,7 +74,7 @@ abstract class Collection implements EntityManagerAwareInterface
             throw new NotFoundException("Could not locate a(n) {$this->collected_class} by $id.");
         }
         if (count($results) > 1) {
-            throw new NotFoundException("More than one {$this->collected_class} identified by $id.");
+            throw new Exception("$id yielded more than one result.");
         }
         return array_shift($results);
     }
