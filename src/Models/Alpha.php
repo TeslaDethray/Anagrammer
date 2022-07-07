@@ -50,6 +50,15 @@ class Alpha extends Model
     }
 
     /**
+     * @param Alpha
+     * @return boolean
+     */
+    public function isEqualTo(Alpha $other_alpha) : bool
+    {
+        return $other_alpha->getID() === $this->getID();
+    }
+
+    /**
      * @return boolean
      */
     public function isWildcard() : bool

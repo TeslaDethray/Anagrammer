@@ -47,6 +47,7 @@ class Alphas extends Collection implements ContainerAwareInterface
         $words = $this->getContainer()->get(Words::class);
         foreach ($query->getResult() as $word_id) {
             $word = $words->get($word_id['id']);
+            $word->setFilterAlphas($this);
             if (($num_wildcards === 0) || $word->isAnagramFor($this)) {
                 $words->add($word);
             }
@@ -55,9 +56,17 @@ class Alphas extends Collection implements ContainerAwareInterface
     }
 
     /**
+     * @return bool
+     */
+    public function containsWildcards() : bool
+    {
+        return $this->countWildcards() > 0;
+    }
+
+    /**
      * @return int
      */
-    public function countWildcards()
+    public function countWildcards() : int
     {
         $wildcards = 0;
         foreach ($this->models as $alpha) {

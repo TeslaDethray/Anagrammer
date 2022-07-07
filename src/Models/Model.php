@@ -21,6 +21,15 @@ abstract class Model implements EntityManagerAwareInterface
     protected int $id;
 
     /**
+     * @param string
+     * @return mixed
+     */
+    public function get(string $key) : mixed
+    {
+        return $this->$key;
+    }
+
+    /**
      * @return int
      */
     public function getID() : int

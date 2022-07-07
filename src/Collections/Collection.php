@@ -81,6 +81,20 @@ abstract class Collection implements EntityManagerAwareInterface
     }
 
     /**
+     * @param string $id
+     * @return bool
+     */
+    public function has(string $id) : bool
+    {
+        foreach($this->models as $model) {
+            foreach ($this->searchable_fields as $field) {
+                if ($model->get($field) === $id) return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @return array
      */
     public function serialize() : array

@@ -461,6 +461,11 @@ class Word extends Model implements ContainerAwareInterface
      * @ManyToOne(targetEntity="Alpha")
      */
     protected ?Alpha $loc_15 = null;
+    /**
+     * The Alphas used to anagram this word
+     * @var Alphas
+     */
+    protected ?Alphas $filter_alphas = null;
 
     /**
      * Returns the number of the given alphabetical character in this word.
@@ -484,13 +489,33 @@ class Word extends Model implements ContainerAwareInterface
         return $this->getProperty('alpha', $alpha->getID());
     }
 
+    /**
+     * @param Alphas|null $alphas Include collection of alphas used for calculating
+     *
+     * @return int
+     */
     public function getPointValue() : int
     {
-        $alphas = [];
-        for($i = 1 ; $i <= 15 ; $i++) {
-            $alphas[] = $this->{'loc_' . sprintf('%02d', $i)};
+        if ($this->filter_alphas !== null && $this->filter_alphas->containsWildcards()) {
+            $filter_function = function ($alpha) {
+                return $this->filter_alphas->has($alpha->getId());
+            };
+        } else {
+            $filter_function = function () { return true; };
         }
-        return self::calculatePointValue($alphas);
+        $alpha_list = [];
+        for($i = 1 ; $i <= 15 ; $i++) {
+            $alpha = $this->{'loc_' . sprintf('%02d', $i)};
+
+            if ($alpha !== null) {
+                if (!$filter_function($alpha)) {
+                    $alpha_list[] = $this->getAlphas()->get('*');
+                } else {
+                    $alpha_list[] = $alpha;
+                }
+            }
+        }
+        return self::calculatePointValue($alpha_list);
     }
 
     /**
@@ -521,6 +546,15 @@ class Word extends Model implements ContainerAwareInterface
             'word' => $this->word,
             'point_value' => $this->getPointValue(),
         ];
+    }
+
+    /**
+     * @param Alphas $alphas The Alphas used to anagram this word
+     * @return void
+     */
+    public function setFilterAlphas(Alphas $alphas) : void
+    {
+        $this->alphas = $alphas;
     }
 
     /**
