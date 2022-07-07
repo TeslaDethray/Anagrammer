@@ -17,9 +17,9 @@ class Words extends Collection implements ContainerAwareInterface
     /**
      * @var string
      */
-    protected $collected_class = Word::class;
+    protected string $collected_class = Word::class;
     /**
      * @var string[]
      */
-    protected $searchable_fields = ['id', 'word',];
+    protected array $searchable_fields = ['id', 'word',];
 }

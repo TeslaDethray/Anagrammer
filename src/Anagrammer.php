@@ -31,7 +31,10 @@ class Anagrammer implements ContainerAwareInterface, EntityManagerAwareInterface
         $this->configureContainer();
     }
 
-    protected function configureContainer()
+    /**
+     * @return void
+     */
+    protected function configureContainer() : void
     {
         $container = new Container();
 

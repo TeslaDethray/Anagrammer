@@ -11,13 +11,13 @@ interface EntityManagerAwareInterface
      *
      * @return EntityManager
      */
-    public function getEntityManager();
+    public function getEntityManager() : EntityManager;
 
     /**
      * Inject a pre-configured Entity Manager object.
      *
      * @param EntityManager $entity_manager
-     * @return mixed
+     * @return void
      */
-    public function setEntityManager(EntityManager $entity_manager);
+    public function setEntityManager(EntityManager $entity_manager) : void;
 }

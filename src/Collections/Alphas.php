@@ -18,11 +18,11 @@ class Alphas extends Collection implements ContainerAwareInterface
     /**
      * @var string
      */
-    protected $collected_class = Alpha::class;
+    protected string $collected_class = Alpha::class;
     /**
      * @var string[]
      */
-    protected $searchable_fields = ['id', 'name',];
+    protected array $searchable_fields = ['id', 'name',];
 
     /**
      * @return Words

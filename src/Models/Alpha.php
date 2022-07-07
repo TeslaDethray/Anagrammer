@@ -59,9 +59,9 @@ class Alpha extends Model
 
     /**
      * @param string $name
-     * @return $this
+     * @return Alpha $this
      */
-    public function setProperties($name)
+    public function setProperties($name) : Alpha
     {
         $this->name = "$name";
         return $this;
