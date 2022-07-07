@@ -24,7 +24,7 @@ switch (strtolower($argv[1])) {
         var_dump($container->get("TeslaDethray\\Anagrammer\\Collections\\$base_class")->serialize());
         break;
     case 'info':
-        var_dump($container->get("TeslaDethray\\Anagrammer\\Collections\\$base_class")->get($argv[3]));
+        var_dump($container->get("TeslaDethray\\Anagrammer\\Collections\\$base_class")->get($argv[3])->serialize());
         break;
     case 'anagram':
         $alphas = $container->get('TeslaDethray\\Anagrammer\\Collections\\Alphas');

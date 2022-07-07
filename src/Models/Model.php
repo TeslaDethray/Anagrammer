@@ -18,7 +18,7 @@ abstract class Model implements EntityManagerAwareInterface
      * @var integer
      * This needs to be added to every model for the proper functioning of the ORM.
      */
-    protected $id;
+    protected int $id;
 
     /**
      * @return int
